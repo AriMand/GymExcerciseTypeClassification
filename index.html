@@ -101,7 +101,7 @@ dim(training) </code></pre>
 <pre class="r"><code>dim(testing)</code></pre>
 <pre><code>## [1] 4904   54</code></pre>
 <p>The model is bult usign the train fuction in caret .</p>
-<p>The range of values for the features are varied so we use centering and scaling to preprocess them make them in same range for better prediction.</p>
+<p>The range of values for the features are varied so we use centering and scaling to preprocess and make them in same range for better prediction.</p>
 <p>The trainig method used is “lda”</p>
 <pre class="r"><code>modFit&lt;-train(classe~.,data=training,method=&quot;lda&quot;,preProcess = c(&quot;center&quot;, &quot;scale&quot;))</code></pre>
 <pre><code>## Loading required package: MASS</code></pre>
