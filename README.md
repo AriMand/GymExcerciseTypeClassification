@@ -6,3 +6,5 @@ This is a machine learning based classification model to classify the exercise p
 You can find a details description of the model building process in the following link
 
 http://arimand.github.io/GymExcerciseTypeClassification/
+
+http://arimand.github.io/GymExcerciseTypeClassification/ExcersiseTypePrediction.html
