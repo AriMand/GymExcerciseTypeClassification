@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>Gymexcercisetypeclassification by AriMand</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Gymexcercisetypeclassification</h1>
+        <h2>This is a machine learning based classification model to classify the exercise pattern of people in to five different classes with data from accelerometers on the belt, forearm, arm, and dumbell </h2>
+
+        <section id="downloads">
+          <a href="https://github.com/AriMand/GymExcerciseTypeClassification/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/AriMand/GymExcerciseTypeClassification/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/AriMand/GymExcerciseTypeClassification" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p>&lt;!DOCTYPE html&gt;</p>
+
+<p></p>
+
+<p></p>
+
+<p></p>
+
+<p></p>Classification of Excercise type<p></p>
+
+code{white-space: pre;}<p></p>
+
+
+  pre:not([class]) {
+    background-color: white;
+  }
+<p></p>
+
+<p></p>
+
+
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+<div>
+
+
+<div>
+<h1>
+<a name="classification-of-excercise-type" class="anchor" href="#classification-of-excercise-type"><span class="octicon octicon-link"></span></a>Classification of Excercise type</h1>
+</div>
+
+<p>This is model developed to predict the class of excersise done by people from the reading of the movemnt of the diff body parts and the excersise equipments like dumbells and belts etc.</p>
+
+<p>In this project 6 participant asked to perform barbell lifts correctly and incorrectly in 5 different ways (A,B,C,D,E). This data is being used to train a model to classify the way of excersise in to the given categories</p>
+
+<p>A detailed description of the dataset is availabel in the following link. <a href="http://groupware.les.inf.puc-rio.br/har">http://groupware.les.inf.puc-rio.br/har</a></p>
+
+<p>You can load the data using the following rscript (replace the file location with your own file location)</p>
+
+<pre><code>csv.data &lt;- read.csv("C:\\Users\\Aritra\\Desktop\\MLr\\pml-training.csv");
+train &lt;- csv.data[c(7:11,37:49,60:68,84:86,102,113:124,140,151:160)];
+csv.data &lt;- read.csv("C:\\Users\\Aritra\\Desktop\\MLr\\pml-testing.csv");
+test &lt;- csv.data[c(7:11,37:49,60:68,84:86,102,113:124,140,151:159)];</code></pre>
+
+<p>The data shows a lot of covariance among the parameters and tend to follow a data distribution pattern which can be seen bt plotting the parameters against each other using the the ggplot package in R</p>
+
+<pre><code>library(ggplot2)</code></pre>
+
+<p>given bellow are some plots of the parameters in the data using qplot function <img title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="672"><img title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="672"><img title="plot of chunk unnamed-chunk-3" alt="plot of chunk unnamed-chunk-3" width="672"></p>
+
+<p>So a Linear discriminant analysis based model will be suitable for this kind of classication due to the high multivariate covariance of the features</p>
+
+<p>Given below are the list of the features used for classification.</p>
+
+<pre><code>names(train)</code></pre>
+
+<pre><code>##  [1] "num_window"           "roll_belt"            "pitch_belt"          
+##  [4] "yaw_belt"             "total_accel_belt"     "gyros_belt_x"        
+##  [7] "gyros_belt_y"         "gyros_belt_z"         "accel_belt_x"        
+## [10] "accel_belt_y"         "accel_belt_z"         "magnet_belt_x"       
+## [13] "magnet_belt_y"        "magnet_belt_z"        "roll_arm"            
+## [16] "pitch_arm"            "yaw_arm"              "total_accel_arm"     
+## [19] "gyros_arm_x"          "gyros_arm_y"          "gyros_arm_z"         
+## [22] "accel_arm_x"          "accel_arm_y"          "accel_arm_z"         
+## [25] "magnet_arm_x"         "magnet_arm_y"         "magnet_arm_z"        
+## [28] "roll_dumbbell"        "pitch_dumbbell"       "yaw_dumbbell"        
+## [31] "total_accel_dumbbell" "gyros_dumbbell_x"     "gyros_dumbbell_y"    
+## [34] "gyros_dumbbell_z"     "accel_dumbbell_x"     "accel_dumbbell_y"    
+## [37] "accel_dumbbell_z"     "magnet_dumbbell_x"    "magnet_dumbbell_y"   
+## [40] "magnet_dumbbell_z"    "roll_forearm"         "pitch_forearm"       
+## [43] "yaw_forearm"          "total_accel_forearm"  "gyros_forearm_x"     
+## [46] "gyros_forearm_y"      "gyros_forearm_z"      "accel_forearm_x"     
+## [49] "accel_forearm_y"      "accel_forearm_z"      "magnet_forearm_x"    
+## [52] "magnet_forearm_y"     "magnet_forearm_z"     "classe"</code></pre>
+
+<p>We do the modeling and cross validation using caret package</p>
+
+<pre><code>library(caret)</code></pre>
+
+<pre><code>## Loading required package: lattice</code></pre>
+
+<p>we keep the test set intact to run the model on it just once.</p>
+
+<p>We slice the Training set into traing and test set for model building and cross validation.</p>
+
+<pre><code>inTrain&lt;-createDataPartition(y=train$classe,p=0.75,list=FALSE)
+training&lt;-train[inTrain,]
+testing&lt;-train[-inTrain,]
+dim(training) </code></pre>
+
+<pre><code>## [1] 14718    54</code></pre>
+
+<pre><code>dim(testing)</code></pre>
+
+<pre><code>## [1] 4904   54</code></pre>
+
+<p>The model is bult usign the train fuction in caret .</p>
+
+<p>The range of values for the features are varied so we use centering and scaling to preprocess them make them in same range for better prediction.</p>
+
+<p>The trainig method used is “lda”</p>
+
+<pre><code>modFit&lt;-train(classe~.,data=training,method="lda",preProcess = c("center", "scale"))</code></pre>
+
+<pre><code>## Loading required package: MASS</code></pre>
+
+<p>We we use the testing slice of the training data to cross validate the model.</p>
+
+<pre><code>prediction&lt;-predict(modFit,testing[-54])</code></pre>
+
+<p>we draw a confusion matrix for the model on the cross validation data which is created by random sampling from the training data earlier</p>
+
+<pre><code>confusionMatrix(testing$classe,prediction)</code></pre>
+
+<pre><code>## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction    A    B    C    D    E
+##          A 1127   51   88  121    8
+##          B  142  609  110   39   49
+##          C   87   83  559  100   26
+##          D   45   36   82  606   35
+##          E   32  136   67   80  586
+## 
+## Overall Statistics
+##                                         
+##                Accuracy : 0.711         
+##                  95% CI : (0.698, 0.724)
+##     No Information Rate : 0.292         
+##     P-Value [Acc &gt; NIR] : &lt;2e-16        
+##                                         
+##                   Kappa : 0.635         
+##  Mcnemar's Test P-Value : &lt;2e-16        
+## 
+## Statistics by Class:
+## 
+##                      Class: A Class: B Class: C Class: D Class: E
+## Sensitivity             0.786    0.666    0.617    0.641    0.832
+## Specificity             0.923    0.915    0.926    0.950    0.925
+## Pos Pred Value          0.808    0.642    0.654    0.754    0.650
+## Neg Pred Value          0.913    0.923    0.914    0.917    0.971
+## Prevalence              0.292    0.187    0.185    0.193    0.144
+## Detection Rate          0.230    0.124    0.114    0.124    0.119
+## Detection Prevalence    0.284    0.194    0.174    0.164    0.184
+## Balanced Accuracy       0.855    0.790    0.771    0.795    0.879</code></pre>
+
+<p>The expected out of sample error is around 65% to 70%</p>
+
+<p>We fnally run it on the 20 test samples to generate the predictions As given below,</p>
+
+<pre><code>prediction&lt;-predict(modFit,test)
+print(prediction)</code></pre>
+
+<pre><code>##  [1] B A B A A E D D A A D A B A B A A B B B
+## Levels: A B C D E</code></pre>
+
+<p></p>
+</div>
+
+<p>
+</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
